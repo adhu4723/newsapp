@@ -35,10 +35,10 @@
     console.log(indianDate); // Example: 17-06-2025
     async function loadNews() {
       const container = document.getElementById("newsContainer");
-      const index = 2
+      const index = 0
 
       try {
-        const response = await axios.get("http://localhost:5000/api/news/latest/latest");
+        const response = await axios.get("https://newsapp-production-d6ef.up.railway.app/api/news/latest/latest");
         const article = response.data;
         console.log('auth', article)
 

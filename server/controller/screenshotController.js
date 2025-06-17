@@ -20,7 +20,7 @@ const clearOldScreenshots = () => {
 };
 
 exports.captureScreenshot = async (req, res) => {
-  const url = "http://127.0.0.1:5500/index.html";
+  const url = "https://adhu4723.github.io/newsapp/";
 
   try {
    const browser = await puppeteer.launch({
