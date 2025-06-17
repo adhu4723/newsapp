@@ -20,40 +20,44 @@
   </style>
 </head>
 
-<body class="flex justify-center items-center min-h-screen">
+<body class="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
 
   <div id="newsContainer" class="w-fit mx-auto"></div>
 
-  <script>
+  <!-- Loader -->
+  <div id="loader" class="hidden text-center mt-4 text-blue-500 font-bold">⏳ Uploading to Instagram...</div>
 
+  <!-- Post Button -->
+  <button onclick="postToInstagram()" id="postButton" class="bg-gray-300 rounded px-3 py-1 mt-4">
+    POST THIS NEWS
+  </button>
+
+  <script>
     const today = new Date();
     const day = String(today.getDate()).padStart(2, '0');
-    const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+    const month = String(today.getMonth() + 1).padStart(2, '0');
     const year = today.getFullYear();
-
     const indianDate = `${day}-${month}-${year}`;
-    console.log(indianDate); // Example: 17-06-2025
+    let latestArticle = null;
+
     async function loadNews() {
       const container = document.getElementById("newsContainer");
-      const index = 0
-
       try {
         const response = await axios.get("https://newsapp-production-d6ef.up.railway.app/api/news/latest/latest");
-        const article = response.data;
-        console.log('auth', article)
+        latestArticle = response.data[0];
 
         container.innerHTML = `
           <div class="relative w-[650px] h-[650px] shadow-lg overflow-hidden bg-black">
             <!-- Header -->
             <div class="absolute top-0 left-0 w-full p-4 flex justify-between items-center text-white z-10">
-              <h2 class="font-bold bg-black/50 px-2 py-1  text-justify  text-xl">${article[index].source || 'NewsAxis'}</h2>
-              <time class="font-bold">${indianDate || 'Unknown Date'}</time>
+              <h2 class="font-bold bg-black/50 px-2 py-1 text-justify text-xl">${latestArticle.source || 'NewsAxis'}</h2>
+              <time class="font-bold">${indianDate}</time>
             </div>
 
             <!-- Image with Gradient -->
             <div class="w-full h-[320px] relative bg-gray-800">
               <img
-                src="${article[index].image || 'https://cdn.pixabay.com/photo/2023/01/08/14/22/sample-7705346_640.jpg'}"
+                src="${latestArticle.image || 'https://cdn.pixabay.com/photo/2023/01/08/14/22/sample-7705346_640.jpg'}"
                 alt="News"
                 class="w-full h-full object-cover"
               />
@@ -62,12 +66,12 @@
 
             <!-- Title and Info -->
             <div class="absolute bottom-0 left-0 w-full text-white text-center z-10">
-                              <p class='font-semibold mb-2 text-2xl text-yellow-400'>NewsAxisMedia</p>
-
-              <!-- <h3 class="text-black font-extrabold text-3xl py-2 bg-yellow-300 text-center mb-4">BREAKING NEWS</h3> -->
-              <h1 class="text-[40px] px-2 tracking-tight mb-5 leading-tight malayalamfont">${article[index].title || 'No title available'}</h1>
+              <p class='font-semibold mb-2 text-2xl text-yellow-400'>NewsAxisMedia</p>
+              <h1 class="text-[40px] px-2 tracking-tight mb-5 leading-tight malayalamfont">
+                ${latestArticle.title || 'No title available'}
+              </h1>
               <div class="text-white p-2">
-                <p class="hidden">${article[index].summary || ''}</p>
+                <p class="hidden">${latestArticle.summary || ''}</p>
               </div>
             </div>
           </div>
@@ -75,17 +79,36 @@
       } catch (error) {
         console.error("Failed to load article:", error);
         container.innerHTML = `
-          <div class="text-white text-center p-10">
-            <p class="text-red-400 font-semibold text-xl">⚠️ Failed to load news article.</p>
-            <p class="text-sm mt-2">${error.message}</p>
+          <div class="text-red-500 font-semibold text-center p-6">
+            ⚠️ Failed to load news article. ${error.message}
           </div>
         `;
       }
     }
 
+    async function postToInstagram() {
+      const loader = document.getElementById("loader");
+      const button = document.getElementById("postButton");
+
+      loader.classList.remove("hidden");
+      button.disabled = true;
+      button.innerText = "Posting...";
+
+      try {
+        const res = await axios.get("https://newsapp-production-d6ef.up.railway.app/api/news/screenshot");
+        console.log("Success:", res.data);
+        alert("✅ News posted to Instagram (via API).");
+      } catch (err) {
+        console.error("Error:", err);
+        alert("❌ Failed to post news to Instagram.");
+      } finally {
+        loader.classList.add("hidden");
+        button.disabled = false;
+        button.innerText = "POST THIS NEWS";
+      }
+    }
+
     loadNews();
-
-
   </script>
 
 </body>
