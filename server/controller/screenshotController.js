@@ -4,6 +4,9 @@ const path = require("path");
 const { postToInstagram, postReelToInstagram } = require("../services/postToInstagram");
 const cloudinary = require("../services/cloudinary");
 const ffmpeg = require("fluent-ffmpeg");
+const ffmpegInstaller = require('@ffmpeg-installer/ffmpeg');
+
+ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 
 const screenshotDir = path.join(__dirname, "../screenshots");
 
