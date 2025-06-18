@@ -50,7 +50,11 @@
           <div class="relative w-[650px] h-[650px] shadow-lg overflow-hidden bg-black">
             <!-- Header -->
             <div class="absolute top-0 left-0 w-full p-4 flex justify-between items-center text-white z-10">
-              <h2 class="font-bold bg-black/50 px-2 py-1 text-justify text-xl">${latestArticle.source || 'NewsAxis'}</h2>
+              <div class="flex  bg-black/50 px-4 py-1 items-center gap-2 rounded-lg ml-[-20px]">
+              <img width="40" class='' src="logo (2).png" alt='logo' >
+
+              <h2 class="font-bold text-justify text-xl">${latestArticle.source || 'NewsAxis'}</h2>
+              </div>
               <time class="font-bold">${indianDate}</time>
             </div>
 
@@ -67,7 +71,7 @@
             <!-- Title and Info -->
             <div class="absolute bottom-0 left-0 w-full text-white text-center z-10">
               <p class='font-semibold mb-2 text-2xl text-yellow-400'>NewsAxisMedia</p>
-              <h1 class="text-[40px] px-2 tracking-tight mb-5 leading-tight malayalamfont">
+              <h1 class="text-[40px] px-6 tracking-tight mb-5 leading-tight malayalamfont">
                 ${latestArticle.title || 'No title available'}
               </h1>
               <div class="text-white p-2">

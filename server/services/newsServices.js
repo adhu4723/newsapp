@@ -6,19 +6,22 @@ const DEFAULT_ICON = 'https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/50/3
 
 
 const fetchNews = async (url, selector) => {
-    console.log('url');
-    
+  console.log('url');
+
   try {
     const response = await axios.get(url);
     const $ = cheerio.load(response.data);
     const news = [];
 
     $(selector).each((_, element) => {
-      const title = $(element).find('h2 a').text().trim();
+      const titleRaw = $(element).find('h2 a').text().trim();
+      const title = titleRaw.replace(/Live\s*/gi, '').trim(); // Remove "Live" and extra spaces
+
       const link = BASE_URL + $(element).find('h2 a').attr('href');
       const summary = $(element).find('.cmp-story-list__dispn').text().trim();
-      const image = $(element).find('.cmp-story-list__image-block > a > img').attr('data-src')
-        || $(element).find('.cmp-story-list__image-block > a > img').attr('data-websrc');
+      const image =
+        $(element).find('.cmp-story-list__image-block > a > img').attr('data-src') ||
+        $(element).find('.cmp-story-list__image-block > a > img').attr('data-websrc');
       const timeElement = $(element).find('.cmp-story-list__date.en-font.text-sub-color');
       const timeText = timeElement.text().trim();
       const timeAttr = timeElement.attr('data-publish-date');
@@ -44,6 +47,7 @@ const fetchNews = async (url, selector) => {
     throw error;
   }
 };
+
 
 // Fetch latest news
 exports.fetchLatestNews = () => fetchNews(

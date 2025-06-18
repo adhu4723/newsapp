@@ -50,9 +50,68 @@ async function postToInstagram(imageUrl, caption) {
     console.error('❌ Failed to post to Instagram:', err.response?.data || err.message);
     throw err;
   }
+
+}
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+async function postReelToInstagram(videoUrl, caption) {
+  try {
+    // STEP 1: Create Container
+    const creationRes = await axios.post(
+      `https://graph.facebook.com/v18.0/${IG_USER_ID}/media`,
+      {
+        media_type: 'REELS',
+        video_url: videoUrl,
+        caption: caption,
+        access_token: ACCESS_TOKEN,
+      }
+    );
+
+    const creationId = creationRes.data.id;
+    console.log('✅ Media creation ID:', creationId);
+
+    // STEP 2: Wait for processing
+    let isReady = false;
+    for (let i = 0; i < 10; i++) {
+      await sleep(3000); // wait 3s per try
+      const statusRes = await axios.get(
+        `https://graph.facebook.com/v18.0/${creationId}?fields=status_code&access_token=${ACCESS_TOKEN}`
+      );
+
+      const status = statusRes.data.status_code;
+      console.log(`⏳ Attempt ${i + 1} - Status: ${status}`);
+
+      if (status === 'FINISHED') {
+        isReady = true;
+        break;
+      } else if (status === 'ERROR') {
+        throw new Error('Media processing failed');
+      }
+    }
+
+    if (!isReady) {
+      throw new Error('Media not ready after waiting');
+    }
+
+    // STEP 3: Publish Media
+    const publishRes = await axios.post(
+      `https://graph.facebook.com/v18.0/${IG_USER_ID}/media_publish`,
+      {
+        creation_id: creationId,
+        access_token: ACCESS_TOKEN,
+      }
+    );
+
+    console.log('✅ Reel posted successfully:', publishRes.data);
+    return publishRes.data;
+  } catch (error) {
+    console.error('❌ Error posting to Instagram:', error.response?.data || error.message);
+    throw new Error('Failed to post reel');
+  }
 }
 
 // Export the function
 module.exports = {
   postToInstagram,
+  postReelToInstagram
 };
