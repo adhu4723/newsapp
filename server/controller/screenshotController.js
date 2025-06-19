@@ -132,7 +132,7 @@ exports.captureScreenshot = async (req, res) => {
     const videoUrl = uploadResult.secure_url;
 
     // Post to Instagram as a Reel
-    await postReelToInstagram(videoUrl, `${caption}...#gaintrick #thrissur #photooftheday #entekeralam #trivandrum #likeforfollow #keralaattraction #fashion #picoftheday #like #instadaily #tamil #keraladiaries #travel #malayalamcinema #chuvadelikes #follow #delhi #followforfollowback #mohanlal #gaintrain #naturephotography #gainparty #gainwithcarlz #keralaphotography #followtrain #bangalore #model #karnataka #travelphotography`);
+    await postReelToInstagram(videoUrl, `${caption}... \n\n #gaintrick #thrissur #photooftheday #entekeralam #trivandrum #likeforfollow #keralaattraction #byelection  #election #like #instadaily #tamil #keraladiaries #travel #malayalamcinema #chuvadelikes #follow #delhi #followforfollowback #mohanlal #gaintrain #naturephotography #gainparty #nilambur #keralaphotography #followtrain #bangalore #model #karnataka #travelphotography`);
 
     await browser.close();
 
