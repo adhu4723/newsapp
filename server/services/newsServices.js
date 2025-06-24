@@ -60,3 +60,42 @@ exports.fetchTechNews = () => fetchNews(
   `${BASE_URL}/technology/technology-news.html`,
   '#Tech___Gadgets_SubsectionPage_Technology_News > div > ul > li'
 );
+
+const sportsUrl = 'https://www.mediaoneonline.com/sports';
+exports.fetchSportsNews = async () => {
+  try {
+    const response = await axios.get(sportsUrl);
+    const html = response.data;
+    const $ = cheerio.load(html);
+    const articles = [];
+
+    $('.d-flex.flex-wrap').each((i, element) => {
+      const title = $(element).find('.list-item-right h3.story-title').text().trim();
+      const link = $(element).find('a').attr('href');
+      const summary = $(element).find('.list-item-right p').text().trim();
+      const image = $(element).find('.story-img img').attr('data-src');
+      const category = $(element).find('.sports-header a').text().trim();
+      const readableTime = $(element).find('.time-as-duration').text().trim();
+      console.log(`time: ${readableTime}`);
+
+      if (title && link) {
+        articles.push({ 
+          title, 
+          link: `https://www.mediaoneonline.com${link}`, 
+          summary, 
+          image: image.startsWith('https') ? image : `https://www.mediaoneonline.com${image}`, 
+          category, 
+          readableTime,
+          icon:'https://upload.wikimedia.org/wikipedia/commons/6/62/Media_One_Logo.png' ,
+          channel:'MediaOne'
+        });
+      }
+
+    });
+
+    return articles;
+    
+  } catch (error) {
+    console.error(`Error fetching the page: ${error}`);
+  }
+};

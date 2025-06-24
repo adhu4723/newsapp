@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "postinstall": "puppeteer install"
   },
   "keywords": [],
   "author": "",
@@ -25,5 +26,8 @@
     "fluent-ffmpeg": "^2.1.3",
     "node-cron": "^4.1.0",
     "puppeteer": "^24.10.1"
-  }
+  },
+  "puppeteer": {
+  "default_browser_revision": "125.0.0.0"
+}
 }

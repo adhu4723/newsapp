@@ -8,14 +8,19 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Malayalam:wght@100..900&display=swap"
     rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anek+Malayalam:wght@100..800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <style>
     .malayalamfont {
-      font-family: "Noto Serif Malayalam", serif;
-      font-optical-sizing: auto;
-      font-weight: 800;
-      font-style: normal;
+     font-family: "Anek Malayalam", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
     }
   </style>
 </head>
@@ -63,7 +68,7 @@
               <img
                 src="${latestArticle.image || 'https://cdn.pixabay.com/photo/2023/01/08/14/22/sample-7705346_640.jpg'}"
                 alt="News"
-                class="w-full h-full object-cover"
+                class="w-full   h-full object-cover"
               />
               <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
             </div>

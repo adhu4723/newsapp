@@ -12,7 +12,7 @@ console.log(type);
         news = await newsService.fetchLatestNews();
         break;
       case 'sports':
-        news = await newsService.fetchTechNews();
+        news = await newsService.fetchSportsNews();
         break;
     //     case 'entertainment':
     //       news = await newsService.fetchEntertainmentNews();
@@ -32,3 +32,5 @@ console.log(type);
     res.status(500).json({ error: 'Failed to fetch news' });
   }
 };
+
+
