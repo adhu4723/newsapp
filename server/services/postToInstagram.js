@@ -56,7 +56,7 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 async function postReelToInstagram(videoUrl, caption) {
   try {
-    // STEP 1: Create Container
+    // Step 1: Create Media Container
     const creationRes = await axios.post(
       `https://graph.facebook.com/v18.0/${IG_USER_ID}/media`,
       {
@@ -70,22 +70,35 @@ async function postReelToInstagram(videoUrl, caption) {
     const creationId = creationRes.data.id;
     console.log('✅ Media creation ID:', creationId);
 
-    // STEP 2: Wait for processing
+    // Step 2: Poll for processing completion
     let isReady = false;
-    for (let i = 0; i < 10; i++) {
-      await sleep(3000); // wait 3s per try
-      const statusRes = await axios.get(
-        `https://graph.facebook.com/v18.0/${creationId}?fields=status_code&access_token=${ACCESS_TOKEN}`
-      );
+    let attempt = 0;
+    const maxAttempts = 15; // Up to ~2 mins
+    const baseDelay = 3000;
 
-      const status = statusRes.data.status_code;
-      console.log(`⏳ Attempt ${i + 1} - Status: ${status}`);
+    while (attempt < maxAttempts) {
+      attempt++;
+      await sleep(baseDelay * attempt); // exponential backoff
+      try {
+        const statusRes = await axios.get(
+          `https://graph.facebook.com/v18.0/${creationId}?fields=status_code&access_token=${ACCESS_TOKEN}`
+        );
 
-      if (status === 'FINISHED') {
-        isReady = true;
-        break;
-      } else if (status === 'ERROR') {
-        throw new Error('Media processing failed');
+        const status = statusRes.data.status_code;
+        console.log(`⏳ Attempt ${attempt} - Status: ${status}`);
+
+        if (status === 'FINISHED') {
+          isReady = true;
+          break;
+        }
+
+        if (status === 'ERROR') {
+          throw new Error('Media processing failed at Instagram');
+        }
+
+      } catch (err) {
+        console.warn(`⚠️ Status check failed on attempt ${attempt}:`, err.response?.data || err.message);
+        // Continue retrying unless status is error
       }
     }
 
@@ -93,7 +106,7 @@ async function postReelToInstagram(videoUrl, caption) {
       throw new Error('Media not ready after waiting');
     }
 
-    // STEP 3: Publish Media
+    // Step 3: Publish the Reel
     const publishRes = await axios.post(
       `https://graph.facebook.com/v18.0/${IG_USER_ID}/media_publish`,
       {
@@ -104,11 +117,13 @@ async function postReelToInstagram(videoUrl, caption) {
 
     console.log('✅ Reel posted successfully:', publishRes.data);
     return publishRes.data;
+
   } catch (error) {
     console.error('❌ Error posting to Instagram:', error.response?.data || error.message);
     throw new Error('Failed to post reel');
   }
 }
+
 
 // Export the function
 module.exports = {
