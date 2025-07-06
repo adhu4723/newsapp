@@ -48,7 +48,7 @@
     async function loadNews() {
       const container = document.getElementById("newsContainer");
       try {
-        const response = await axios.get("https://newsapp-production-d6ef.up.railway.app/api/news/latest/latest");
+        const response = await axios.get("https://newsapp-7m7g.onrender.com/api/news/latest/latest");
         latestArticle = response.data[0];
 
         container.innerHTML = `
