@@ -50,6 +50,8 @@
       try {
         const response = await axios.get("https://newsapp-7m7g.onrender.com/api/news/latest/latest");
         latestArticle = response.data[0];
+         const baseImageUrl = latestArticle.image?.split('?')[0];
+        const cleanImageUrl = baseImageUrl ? `${baseImageUrl}?w=650&h=650` : "https://cdn.pixabay.com/photo/2023/01/08/14/22/sample-7705346_640.jpg";
 
         container.innerHTML = `
           <div class="relative w-[650px] h-[650px] shadow-lg overflow-hidden bg-black">
@@ -66,7 +68,7 @@
             <!-- Image with Gradient -->
             <div class="w-full h-[320px] relative bg-gray-800">
               <img
-                src="${latestArticle.image || 'https://cdn.pixabay.com/photo/2023/01/08/14/22/sample-7705346_640.jpg'}"
+                src="${baseImageUrl || 'https://cdn.pixabay.com/photo/2023/01/08/14/22/sample-7705346_640.jpg'}"
                 alt="News"
                 class="w-full   h-full object-cover"
               />
