@@ -53,7 +53,7 @@
       const container = document.getElementById("newsContainer");
       try {
         const response = await axios.get("https://newsapp-7m7g.onrender.com/api/news/latest/latest");
-        latestArticle = response.data[14]; // Adjust index if needed
+        latestArticle = response.data[0]; // Adjust index if needed
         const baseImageUrl = latestArticle.image?.split('?')[0];
         console.log(baseImageUrl);
 
