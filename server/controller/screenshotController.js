@@ -1,21 +1,21 @@
 const puppeteer = require("puppeteer");
 const fs = require("fs");
 const path = require("path");
-const { postToInstagram, postReelToInstagram } = require("../services/postToInstagram");
-const cloudinary = require("../services/cloudinary");
 const ffmpeg = require("fluent-ffmpeg");
 const ffmpegInstaller = require('@ffmpeg-installer/ffmpeg');
+const cloudinary = require("../services/cloudinary");
+const { postReelToInstagram } = require("../services/postToInstagram");
 
 ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 
 const screenshotDir = path.join(__dirname, "../screenshots");
 
-// Ensure screenshots folder exists
+// Ensure the screenshots folder exists
 if (!fs.existsSync(screenshotDir)) {
   fs.mkdirSync(screenshotDir, { recursive: true });
 }
 
-// Delete all files in screenshots folder
+// Delete all old screenshots
 const clearOldScreenshots = () => {
   const files = fs.readdirSync(screenshotDir);
   for (const file of files) {
@@ -23,96 +23,35 @@ const clearOldScreenshots = () => {
   }
 };
 
-// exports.captureScreenshot = async (req, res) => {
-//   const url = "https://adhu4723.github.io/newsapp/";
-
-//   try {
-//    const browser = await puppeteer.launch({
-//   headless: "new",
-//   args: ["--no-sandbox", "--disable-setuid-sandbox"],
-//    });
-//     const page = await browser.newPage();
-
-//     await page.goto(url, { waitUntil: "networkidle2" });
-//     await page.setViewport({ width: 900, height: 900 });
-
-//     // Wait for the element
-//     await page.waitForSelector("div.relative.w-\\[650px\\].h-\\[650px\\]");
-//     const element = await page.$("div.relative.w-\\[650px\\].h-\\[650px\\]");
-//      // Extract caption text
-//     const caption = await page.$eval(
-//       "#newsContainer > div > div.absolute.bottom-0.left-0.w-full.text-white.text-center.z-10 > div > p.hidden",
-//       (el) => el.innerText.trim()
-//     );
-
-//     console.log(caption);
-
-//     // Clear old screenshots
-//     clearOldScreenshots();
-
-//     const fileName = `news-${Date.now()}.png`;
-//     const screenshotPath = path.join(screenshotDir, fileName);
-
-//     // Save screenshot locally first ✅
-//     await element.screenshot({ path: screenshotPath });
-//     console.log("📸 Screenshot saved:", screenshotPath);
-
-//     // Upload to Cloudinary ✅
-//     const uploadResult = await cloudinary.uploader.upload(screenshotPath, {
-//       folder: "instagram_uploads",
-//     });
-//     const imageUrl = uploadResult.secure_url;
-//     console.log("☁️ Uploaded to Cloudinary:", imageUrl);
-
-//     // Post to Instagram ✅
-//     await postToInstagram(imageUrl, `${caption}....#gaintrick #thrissur #photooftheday #entekeralam #trivandrum #likeforfollow #keralaattraction #fashion #picoftheday #like #instadaily #tamil #keraladiaries #travel #malayalamcinema #chuvadelikes #follow #delhi #followforfollowback #mohanlal #gaintrain #naturephotography #gainparty #gainwithcarlz #keralaphotography #followtrain #bangalore #model #karnataka #travelphotography`);
-
-//     await browser.close();
-
-//     res.status(200).json({
-//       message: "Screenshot captured and posted to Instagram",
-//       file: `/screenshots/${fileName}`,
-//       cloudinaryUrl: imageUrl,
-//     });
-
-//   } catch (err) {
-//     console.error("❌ Error capturing screenshot:", err);
-//     res.status(500).json({ error: "Failed to capture screenshot" });
-//   }
-// };
-
 exports.captureScreenshot = async (req, res) => {
   const url = "https://adhu4723.github.io/newsapp/";
 
   try {
     const browser = await puppeteer.launch({
-  headless: "new",
-  args: ["--no-sandbox", "--disable-setuid-sandbox"],
-});
-    const page = await browser.newPage();
+      headless: "new",
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
 
+    const page = await browser.newPage();
     await page.goto(url, { waitUntil: "networkidle2" });
     await page.setViewport({ width: 900, height: 900 });
 
-   // Wait for the container to load
-await page.waitForSelector("div.relative.w-[650px].h-[650px]");
+    // Wait for the container with background image and content
+    await page.waitForSelector("div.relative.w-[650px].h-[650px]");
 
-// Select the container element
-const element = await page.$("div.relative.w-[650px].h-[650px]");
+    const element = await page.$("div.relative.w-[650px].h-[650px]");
 
-// Get the Malayalam headline from <h1>
-const headline = await page.$eval(
-  "h1.malayalamfont",
-  (el) => el.innerText.trim()
-);
+    // Extract the headline
+    const headline = await page.$eval("h1.malayalamfont", el => el.innerText.trim());
 
-// Get the hidden summary text
-const caption = await page.$eval(
-  "div.relative.z-10.w-full.mt-auto.text-center p-4.pb-20 > div.hidden > p",
-  (el) => el.innerText.trim()
-);
+    // Extract the hidden summary safely
+    const caption = await page.evaluate(() => {
+      const hiddenPara = document.querySelector("div.relative.z-10.w-full.mt-auto.text-center p.hidden > p");
+      return hiddenPara ? hiddenPara.innerText.trim() : "No caption available.";
+    });
 
     clearOldScreenshots();
+
     const imageName = `news-${Date.now()}.png`;
     const imagePath = path.join(screenshotDir, imageName);
     await element.screenshot({ path: imagePath });
@@ -120,7 +59,7 @@ const caption = await page.$eval(
     const videoName = imageName.replace(".png", ".mp4");
     const videoPath = path.join(screenshotDir, videoName);
 
-    // Convert image to video (5s)
+    // Convert to a 5s video
     await new Promise((resolve, reject) => {
       ffmpeg()
         .addInput(imagePath)
@@ -133,7 +72,7 @@ const caption = await page.$eval(
         .on("error", reject);
     });
 
-    // Upload video to Cloudinary
+    // Upload to Cloudinary
     const uploadResult = await cloudinary.uploader.upload(videoPath, {
       folder: "instagram_reels",
       resource_type: "video",
@@ -141,8 +80,11 @@ const caption = await page.$eval(
 
     const videoUrl = uploadResult.secure_url;
 
-    // Post to Instagram as a Reel
-    await postReelToInstagram(videoUrl, `${caption}... \n\n #gaintrick #thrissur #photooftheday #entekeralam #trivandrum #likeforfollow #keralaattraction #byelection  #election #like #instadaily #tamil #keraladiaries #travel #malayalamcinema #chuvadelikes #follow #delhi #followforfollowback #mohanlal #gaintrain #naturephotography #gainparty #nilambur #keralaphotography #followtrain #bangalore #model #karnataka #travelphotography`);
+    // Post to Instagram as reel
+    await postReelToInstagram(
+      videoUrl,
+      `${caption} \n\n #newsaxis #keralanews #malayalamnews #instanews #keralagram #newsupdate #viralnews #reelskerala #electionnews #followforupdates`
+    );
 
     await browser.close();
 
