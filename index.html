@@ -60,7 +60,7 @@
         const cleanImageUrl = baseImageUrl ? `${baseImageUrl}?` : "https://cdn.pixabay.com/photo/2023/01/08/14/22/sample-7705346_640.jpg";
 
         container.innerHTML = `
-                <div class="relative w-[650px] h-[650px] rounded-lg shadow-xl overflow-hidden flex flex-col bg-cover bg-center"
+                <div id="newsCard" class="relative w-[650px] h-[650px] rounded-lg shadow-xl overflow-hidden flex flex-col bg-cover bg-center"
                     style="background-image: url('${cleanImageUrl}')">
 
                     <div class="absolute top-0 left-0 w-full p-4 flex justify-between items-center text-white z-20 bg-gradient-to-b from-black/70 to-transparent">
