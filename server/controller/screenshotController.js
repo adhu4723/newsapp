@@ -97,11 +97,7 @@ const finalCaption = `${trimmedCaption}\n\n${hashtags.join(" ")}`;
 
 await postReelToInstagram(videoUrl, finalCaption);
 
-    // Post to Instagram as reel
-    await postReelToInstagram(
-      videoUrl,
-     finalCaption
-    );
+    
 
     await browser.close();
 
