@@ -44,11 +44,11 @@ exports.captureScreenshot = async (req, res) => {
     // Extract the headline
     const headline = await page.$eval("h1.malayalamfont", el => el.innerText.trim());
 
-    // Extract the hidden summary safely
-    const caption = await page.evaluate(() => {
-      const hiddenPara = document.querySelector("div.relative.z-10.w-full.mt-auto.text-center p.hidden > p");
-      return hiddenPara ? hiddenPara.innerText.trim() : "No caption available.";
-    });
+// Extract the hidden summary safely
+const caption = await page.evaluate(() => {
+  const para = document.querySelector("#newsSummary > p");
+  return para ? para.innerText.trim() : "No caption available.";
+});
 
     clearOldScreenshots();
 
@@ -83,7 +83,7 @@ exports.captureScreenshot = async (req, res) => {
     // Post to Instagram as reel
     await postReelToInstagram(
       videoUrl,
-      `${caption} \n\n #newsaxis #keralanews #malayalamnews #instanews #keralagram #newsupdate #viralnews #reelskerala #electionnews #followforupdates`
+      `${caption} \n\n #newsaxis #keralanews #malayalamnews #instanews #keralagram #newsupdate #viralnews #reelskerala #electionnews #followforupdates #gaintrick #thrissur #photooftheday #entekeralam #trivandrum #likeforfollow #keralaattraction #byelection #election #like #instadaily #tamil #keraladiaries #travel #malayalamcinema #chuvadelikes #follow #delhi #followforfollowback #mohanlal #gaintrain #naturephotography #gainparty #nilambur #keralaphotography #followtrain #bangalore #model #karnataka #travelphotography`
     );
 
     await browser.close();
