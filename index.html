@@ -1,26 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ml">
 
 <head>
   <meta charset="UTF-8" />
   <title>News Display</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Malayalam:wght@100..900&display=swap"
     rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anek+Malayalam:wght@100..800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Anek+Malayalam:wght@100..800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWtPyhA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <style>
     .malayalamfont {
-     font-family: "Anek Malayalam", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 700;
-  font-style: normal;
-  font-variation-settings:
-    "wdth" 100;
+      font-family: "Anek Malayalam", sans-serif;
+      font-weight: 700;
+      font-style: normal;
+      font-variation-settings: "wdth" 100;
     }
   </style>
 </head>
@@ -29,11 +32,12 @@
 
   <div id="newsContainer" class="w-fit mx-auto"></div>
 
-  <!-- Loader -->
-  <div id="loader" class="hidden text-center mt-4 text-blue-500 font-bold">⏳ Uploading to Instagram...</div>
+  <div id="loader" class="hidden text-center mt-6 text-red-600 font-semibold text-lg">
+    ⏳ Uploading to Instagram...
+  </div>
 
-  <!-- Post Button -->
-  <button onclick="postToInstagram()" id="postButton" class="bg-gray-300 rounded px-3 py-1 mt-4">
+  <button onclick="postToInstagram()" id="postButton"
+    class="bg-gradient-to-r from-red-700 to-red-500 hover:from-red-800 hover:to-red-600 text-yellow-300 font-bold py-3 px-6 rounded-lg shadow-md mt-6 transition duration-300 ease-in-out">
     POST THIS NEWS
   </button>
 
@@ -49,51 +53,67 @@
       const container = document.getElementById("newsContainer");
       try {
         const response = await axios.get("https://newsapp-7m7g.onrender.com/api/news/latest/latest");
-        latestArticle = response.data[0];
-         const baseImageUrl = latestArticle.image?.split('?')[0];
-        const cleanImageUrl = baseImageUrl ? `${baseImageUrl}?w=650&h=650` : "https://cdn.pixabay.com/photo/2023/01/08/14/22/sample-7705346_640.jpg";
+        latestArticle = response.data[14]; // Adjust index if needed
+        const baseImageUrl = latestArticle.image?.split('?')[0];
+        console.log(baseImageUrl);
+
+        const cleanImageUrl = baseImageUrl ? `${baseImageUrl}?` : "https://cdn.pixabay.com/photo/2023/01/08/14/22/sample-7705346_640.jpg";
 
         container.innerHTML = `
-          <div class="relative w-[650px] h-[650px] shadow-lg overflow-hidden bg-black">
-            <!-- Header -->
-            <div class="absolute top-0 left-0 w-full p-4 flex justify-between items-center text-white z-10">
-              <div class="flex  bg-black/50 px-4 py-1 items-center gap-2 rounded-lg ml-[-20px]">
-              <img width="40" class='' src="logo (2).png" alt='logo' >
+                <div class="relative w-[650px] h-[650px] rounded-lg shadow-xl overflow-hidden flex flex-col bg-cover bg-center"
+                    style="background-image: url('${cleanImageUrl}')">
 
-              <h2 class="font-bold text-justify text-xl">${latestArticle.source || 'NewsAxis'}</h2>
-              </div>
-              <time class="font-bold">${indianDate}</time>
-            </div>
+                    <div class="absolute top-0 left-0 w-full p-4 flex justify-between items-center text-white z-20 bg-gradient-to-b from-black/70 to-transparent">
+                        <span class="font-semibold text-lg px-3 py-1 bg-black/30 rounded-full">${indianDate}</span>
+                        <span class="font-bold text-xl">${latestArticle.source || 'NewsAxis'}</span>
+                    </div>
 
-            <!-- Image with Gradient -->
-            <div class="w-full h-[320px] relative bg-gray-800">
-              <img
-                src="${baseImageUrl || 'https://cdn.pixabay.com/photo/2023/01/08/14/22/sample-7705346_640.jpg'}"
-                alt="News"
-                class="w-full   h-full object-cover"
-              />
-              <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
-            </div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#1c0000e0] via-[#2a0000aa] to-transparent z-0"></div>
 
-            <!-- Title and Info -->
-            <div class="absolute bottom-0 left-0 w-full text-white text-center z-10">
-              <p class='font-semibold mb-2 text-2xl text-yellow-400'>NewsAxisMedia</p>
-              <h1 class="text-[40px] px-6 tracking-tight mb-5 leading-tight malayalamfont">
-                ${latestArticle.title || 'No title available'}
-              </h1>
-              <div class="text-white p-2">
-                <p class="hidden">${latestArticle.summary || ''}</p>
-              </div>
-            </div>
-          </div>
-        `;
+                    <div class="relative z-10 w-full mt-auto text-center p-4 pb-20"> 
+                        <div class="rounded-lg">
+                            <p class="font-semibold mb-2 text-xl text-white">NewsAxisMedia</p>
+                            <h1 class="text-4xl px-8 tracking-tight leading-tight malayalamfont text-yellow-300 drop-shadow-md">
+                                ${latestArticle.title || 'No title available'}
+                            </h1>
+                        </div>
+                        <div class="hidden">
+                            <p>${latestArticle.summary || ''}</p>
+                        </div>
+                    </div>
+
+                    <div class="absolute bottom-0 left-0 w-full bg-white/90 px-4 py-3 flex items-center justify-between text-gray-800 z-30">
+                        <div class="flex items-center gap-2">
+                            <span class="text-gray-800 font-semibold text-base">newsaxis</span> </div>
+
+                        <div class="flex items-center gap-2">
+                            <span class="bg-gray-200 text-gray-700 text-xs font-semibold px-3 py-1 rounded-full shadow-sm">Follow Us</span>
+                            <a href="#" class="bg-[#1877F2] text-white rounded-full w-7 h-7 flex items-center justify-center text-sm transition-transform duration-200 hover:scale-110" aria-label="Facebook">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="#" class="bg-gradient-to-tr from-[#feda75] via-[#fa7e1e] to-[#d62976] text-white rounded-full w-7 h-7 flex items-center justify-center text-sm transition-transform duration-200 hover:scale-110" aria-label="Instagram">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" class="bg-black text-white rounded-full w-7 h-7 flex items-center justify-center text-sm transition-transform duration-200 hover:scale-110" aria-label="X (Twitter)">
+                                <i class="fab fa-x-twitter"></i>
+                            </a>
+                            <a href="#" class="bg-[#FF0000] text-white rounded-full w-7 h-7 flex items-center justify-center text-sm transition-transform duration-200 hover:scale-110" aria-label="YouTube">
+                                <i class="fab fa-youtube"></i>
+                            </a>
+                            <a href="#" class="bg-[#0088cc] text-white rounded-full w-7 h-7 flex items-center justify-center text-sm transition-transform duration-200 hover:scale-110" aria-label="Telegram">
+                                <i class="fab fa-telegram-plane"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                `;
       } catch (error) {
         console.error("Failed to load article:", error);
         container.innerHTML = `
-          <div class="text-red-500 font-semibold text-center p-6">
-            ⚠️ Failed to load news article. ${error.message}
-          </div>
-        `;
+                    <div class="text-red-500 font-semibold text-center p-6 bg-white rounded-lg shadow-md">
+                        ⚠️ Failed to load news article. ${error.message}
+                    </div>
+                `;
       }
     }
 
