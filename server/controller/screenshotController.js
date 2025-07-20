@@ -80,11 +80,27 @@ const caption = await page.evaluate(() => {
 
     const videoUrl = uploadResult.secure_url;
     console.log(caption)
+    
+    let trimmedCaption = caption;
+if (caption.length > 1800) {
+  trimmedCaption = caption.slice(0, 1800) + "...";
+}
+
+const hashtags = [
+  "#followforupdates", "#gaintrick", "#thrissur", "#photooftheday", "#entekeralam",
+  "#trivandrum", "#likeforfollow", "#keralaattraction", "#byelection", "#election",
+  "#like", "#instadaily", "#tamil", "#keraladiaries", "#travel",
+  "#malayalamcinema", "#follow", "#mohanlal", "#naturephotography", "#bangalore"
+];
+
+const finalCaption = `${trimmedCaption}\n\n${hashtags.join(" ")}`;
+
+await postReelToInstagram(videoUrl, finalCaption);
 
     // Post to Instagram as reel
     await postReelToInstagram(
       videoUrl,
-      `${caption} \n\n  #followforupdates #gaintrick #thrissur #photooftheday #entekeralam #trivandrum #likeforfollow #keralaattraction #byelection #election #like #instadaily #tamil #keraladiaries #travel #malayalamcinema #chuvadelikes #follow #delhi #followforfollowback #mohanlal #gaintrain #naturephotography #gainparty #nilambur #keralaphotography #followtrain #bangalore #model #karnataka #travelphotography`
+     finalCaption
     );
 
     await browser.close();
