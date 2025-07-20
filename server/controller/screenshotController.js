@@ -37,9 +37,9 @@ exports.captureScreenshot = async (req, res) => {
     await page.setViewport({ width: 900, height: 900 });
 
     // Wait for the container with background image and content
-    await page.waitForSelector("div.relative.w-[650px].h-[650px]");
+   await page.waitForSelector("#newsCard", { timeout: 60000 });
+   const element = await page.$("#newsCard");
 
-    const element = await page.$("div.relative.w-[650px].h-[650px]");
 
     // Extract the headline
     const headline = await page.$eval("h1.malayalamfont", el => el.innerText.trim());
