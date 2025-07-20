@@ -94,13 +94,23 @@ exports.captureScreenshot = async (req, res) => {
     await page.goto(url, { waitUntil: "networkidle2" });
     await page.setViewport({ width: 900, height: 900 });
 
-    await page.waitForSelector("div.relative.w-\\[650px\\].h-\\[650px\\]");
-    const element = await page.$("div.relative.w-\\[650px\\].h-\\[650px\\]");
+   // Wait for the container to load
+await page.waitForSelector("div.relative.w-[650px].h-[650px]");
 
-    const caption = await page.$eval(
-      "#newsContainer > div > div.absolute.bottom-0.left-0.w-full.text-white.text-center.z-10 > div > p.hidden",
-      (el) => el.innerText.trim()
-    );
+// Select the container element
+const element = await page.$("div.relative.w-[650px].h-[650px]");
+
+// Get the Malayalam headline from <h1>
+const headline = await page.$eval(
+  "h1.malayalamfont",
+  (el) => el.innerText.trim()
+);
+
+// Get the hidden summary text
+const caption = await page.$eval(
+  "div.relative.z-10.w-full.mt-auto.text-center p-4.pb-20 > div.hidden > p",
+  (el) => el.innerText.trim()
+);
 
     clearOldScreenshots();
     const imageName = `news-${Date.now()}.png`;
