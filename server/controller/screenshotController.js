@@ -79,11 +79,12 @@ const caption = await page.evaluate(() => {
     });
 
     const videoUrl = uploadResult.secure_url;
+    console.log(caption)
 
     // Post to Instagram as reel
     await postReelToInstagram(
       videoUrl,
-      `${caption} \n\n #newsaxis #keralanews #malayalamnews #instanews #keralagram #newsupdate #viralnews #reelskerala #electionnews #followforupdates #gaintrick #thrissur #photooftheday #entekeralam #trivandrum #likeforfollow #keralaattraction #byelection #election #like #instadaily #tamil #keraladiaries #travel #malayalamcinema #chuvadelikes #follow #delhi #followforfollowback #mohanlal #gaintrain #naturephotography #gainparty #nilambur #keralaphotography #followtrain #bangalore #model #karnataka #travelphotography`
+      `${caption} \n\n  #followforupdates #gaintrick #thrissur #photooftheday #entekeralam #trivandrum #likeforfollow #keralaattraction #byelection #election #like #instadaily #tamil #keraladiaries #travel #malayalamcinema #chuvadelikes #follow #delhi #followforfollowback #mohanlal #gaintrain #naturephotography #gainparty #nilambur #keralaphotography #followtrain #bangalore #model #karnataka #travelphotography`
     );
 
     await browser.close();
