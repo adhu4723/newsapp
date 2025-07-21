@@ -60,7 +60,7 @@
         const cleanImageUrl = baseImageUrl ? `${baseImageUrl}?` : "https://cdn.pixabay.com/photo/2023/01/08/14/22/sample-7705346_640.jpg";
 
         container.innerHTML = `
-                <div id="newsCard" class="relative w-[650px] h-[650px] rounded-lg shadow-xl overflow-hidden flex flex-col bg-cover bg-center"
+                <div id="newsCard" class="relative w-[650px] h-[650px] shadow-xl overflow-hidden flex flex-col bg-cover bg-center"
                     style="background-image: url('${cleanImageUrl}')">
 
                     <div class="absolute top-0 -left-0 w-full p-4 flex justify-between items-center text-white z-20 bg-gradient-to-b from-black/70 to-transparent">
@@ -82,12 +82,12 @@
                       </div>
                     </div>
 
-                    <div class="absolute bottom-0 left-0 w-full  px-4 py-3 flex items-center justify-between text-gray-800 z-30">
-                        <div class="flex items-center gap-2">
-                            <span class="text-white font-semibold text-base">newsaxis</span> </div>
+                    <div class="absolute bottom-0 left-0 w-full bg-white px-4 py-3 flex items-center justify-between text-gray-800 z-30">
+                        <div class="flex items-center gap-2 ">
+                            <span class="font-semibold text-base">newsaxis</span> </div>
 
                         <div class="flex items-center border-r-2 border-white   p-2 gap-2 ">
-                            <span class=" uppercase text-white text-sm font-semibold">Follow Us</span>
+                            <span class=" uppercase  text-sm font-semibold">Follow Us</span>
                             <a href="#" class="bg-[#1877F2] text-white rounded-full w-7 h-7 flex items-center justify-center text-sm transition-transform duration-200 hover:scale-110" aria-label="Facebook">
                                 <i class="fab fa-facebook-f"></i>
                             </a>
