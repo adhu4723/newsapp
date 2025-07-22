@@ -4,7 +4,7 @@ const path = require("path");
 const ffmpeg = require("fluent-ffmpeg");
 const ffmpegInstaller = require('@ffmpeg-installer/ffmpeg');
 const cloudinary = require("../services/cloudinary");
-const { postReelToInstagram } = require("../services/postToInstagram");
+const {  postReelToInstagramAndFacebook } = require("../services/postToInstagram");
 
 ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 
@@ -95,7 +95,7 @@ const hashtags = [
 
 const finalCaption = `${trimmedCaption}\n\n${hashtags.join(" ")}`;
 
-await postReelToInstagram(videoUrl, finalCaption);
+await postReelToInstagramAndFacebook(videoUrl, finalCaption);
 
     
 
