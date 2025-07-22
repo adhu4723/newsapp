@@ -107,13 +107,15 @@ async function postReelToInstagram(videoUrl, caption) {
     }
 
     // Step 3: Publish the Reel
-    const publishRes = await axios.post(
-      `https://graph.facebook.com/v18.0/${IG_USER_ID}/media_publish`,
-      {
-        creation_id: creationId,
-        access_token: ACCESS_TOKEN,
-      }
-    );
+const publishRes = await axios.post(
+  `https://graph.facebook.com/v18.0/${IG_USER_ID}/media_publish`,
+  {
+    creation_id: creationId,
+    access_token: ACCESS_TOKEN,
+    share_to_facebook: true
+  }
+);
+
 
     console.log('✅ Reel posted successfully:', publishRes.data);
     return publishRes.data;
